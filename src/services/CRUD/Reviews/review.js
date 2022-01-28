@@ -3,6 +3,11 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import uniqid from "uniqid";
 import { getReview, writeReview } from "../../libs/fs-toolsReview.js";
+import {
+  checkBlogPostSchema,
+  checkSearchSchema,
+  checkValidationResult,
+} from "./validation.js";
 
 const reviewRouter = express.Router();
 const postsJSONPath = join(
@@ -10,12 +15,34 @@ const postsJSONPath = join(
   "../Data/reviews.json"
 );
 
-reviewRouter.post("/", async (req, res, next) => {
-  try {
-  } catch (error) {
-    next(error);
+// post method
+
+reviewRouter.post(
+  "/",
+  checkBlogPostSchema,
+  checkValidationResult,
+  async (req, res, next) => {
+    try {
+      const newReview = {
+        ...req.body,
+        createdAt: new Date(),
+        id: uniqid(),
+      };
+      const reviewArray = await getReview();
+
+      reviewArray.push(newReview);
+
+      await writeReview(reviewArray);
+
+      res.send(newReview);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
+
+// get method
+
 reviewRouter.get("/", async (req, res, next) => {
   const reviewArray = await getReview();
   res.send(reviewArray);
