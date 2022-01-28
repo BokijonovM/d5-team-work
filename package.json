@@ -1,0 +1,25 @@
+{
+  "name": "d5-team-work",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -e js ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BokijonovM/d5-team-work.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BokijonovM/d5-team-work/issues"
+  },
+  "homepage": "https://github.com/BokijonovM/d5-team-work#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
