@@ -1,7 +1,7 @@
 import express from "express";
 import listEndpoints from "express-list-endpoints";
 import cors from "cors";
-import reviewRouter from "./services/CRUD/Reviews/review.js";
+// import reviewRouter from "./services/CRUD/Reviews/review.js";
 
 import {
   badRequestHandler,
@@ -18,7 +18,7 @@ const port = 3001;
 server.use(cors());
 server.use(express.json());
 
-server.use("/review", reviewRouter);
+// server.use("/review", reviewRouter);
 server.use("/products", productsRouter);
 
 server.use(badRequestHandler);
