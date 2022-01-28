@@ -68,4 +68,31 @@ reviewRouter.get("/:id", async (req, res, next) => {
   }
 });
 
+// put method
+
+reviewRouter.put("/:id", async (req, res, next) => {
+  try {
+    const reviewId = req.params.id;
+    const reviewArray = await getReview();
+
+    const index = reviewArray.findIndex(review => review.id === reviewId);
+
+    if (!index == -1) {
+      res.status(404).send(`Review with ${reviewId} is not find!`);
+    }
+    const oldReview = reviewArray[index];
+    const newReview = {
+      ...oldReview,
+      ...req.body,
+      updatedAt: new Date(),
+      id: reviewId,
+    };
+    reviewArray[index] = newReview;
+    await writeReview(reviewArray);
+    res.send(newReview);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default reviewRouter;
