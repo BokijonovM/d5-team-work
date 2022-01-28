@@ -4,11 +4,11 @@ import createHttpError from "http-errors";
 import { validationResult } from "express-validator";
 import { newProductValidation } from "./validation.js";
 // import reviewRouter from "../Reviews/review.js";
-import {
-  checkBlogPostSchema,
-  checkValidationResult,
-} from "../Reviews/validation.js";
-
+// import {
+//   checkBlogPostSchema,
+//   checkValidationResult,
+// } from "../Reviews/validation.js";
+import { parseFile, uploadFile } from "../../files/index.js";
 import {
   getProducts,
   writeProducts,
@@ -192,4 +192,38 @@ productsRouter.delete("/:productId/review/:id", async (req, res, next) => {
   }
 });
 
+// upload images
+
+productsRouter.put(
+  "/:productId/imageUrl",
+  parseFile.single("imageUrl"),
+  uploadFile,
+  async (req, res, next) => {
+    try {
+      const fileAsJSONArray = await getProducts();
+
+      const blogIndex = fileAsJSONArray.findIndex(
+        blog => blog.id === req.params.productId
+      );
+      if (!blogIndex == -1) {
+        res
+          .status(404)
+          .send({ message: `blog with ${req.params.productId} is not found!` });
+      }
+      const previousblogData = fileAsJSONArray[blogIndex];
+      const changedblog = {
+        ...previousblogData,
+        cover: req.file,
+        updatedAt: new Date(),
+        id: req.params.productId,
+      };
+      fileAsJSONArray[blogIndex] = changedblog;
+
+      await writeProducts(fileAsJSONArray);
+      res.send(changedblog);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 export default productsRouter;

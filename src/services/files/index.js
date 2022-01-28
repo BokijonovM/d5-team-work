@@ -1,19 +1,30 @@
-import express from "express";
-import multer from "multer";
-import { saveUsersAvatars } from "../../services/libs/fs-toolsReview.js";
-const filesRouter = express.Router();
-filesRouter.post(
-  "/uploadSingleproduct",
-  multer().single("avatar"),
-  async (req, res, next) => {
-    try {
-      console.log("FILE: ", req.file);
-      await saveUsersAvatars(req.file.originalname, req.file.buffer);
-      res.send("Ok");
-    } catch (error) {
-      next(error);
-    }
-  }
-);
+import path, { dirname, extname } from "path";
 
-export default filesRouter;
+import { fileURLToPath } from "url";
+
+import fs from "fs";
+
+import multer from "multer";
+
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = dirname(__filename);
+
+const publicDirectory = path.join(__dirname, "../../../public/img");
+
+export const parseFile = multer();
+
+export const uploadFile = (req, res, next) => {
+  try {
+    const { originalname, buffer } = req.file;
+    const extension = extname(originalname);
+    const fileName = `${req.params.productId}${extension}`;
+    const pathToFile = path.join(publicDirectory, fileName);
+    fs.writeFileSync(pathToFile, buffer);
+    const link = `http://localhost:3001/public/img/${fileName}`;
+    req.file = link;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
