@@ -61,7 +61,6 @@ reviewRouter.get("/:id", async (req, res, next) => {
       .send({ message: `Post with ${req.params.id} is not found!` });
   }
   res.send(singleReview);
-  res.send(fileArray);
   try {
   } catch (error) {
     next(error);
@@ -90,6 +89,24 @@ reviewRouter.put("/:id", async (req, res, next) => {
     reviewArray[index] = newReview;
     await writeReview(reviewArray);
     res.send(newReview);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// delete method
+
+reviewRouter.delete("/:id", async (req, res, next) => {
+  try {
+    const reviewId = req.params.id;
+
+    const postsArray = await getReview();
+
+    const remainingPosts = postsArray.filter(post => post.id !== reviewId);
+
+    await writeReview(remainingPosts);
+
+    res.send({ message: `Post with ${reviewId} is successfully deleted` });
   } catch (error) {
     next(error);
   }
