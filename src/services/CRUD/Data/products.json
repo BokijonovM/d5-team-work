@@ -1,13 +1,1 @@
-[
-  {
-    "name": "3310",
-    "description": "somthing loger",
-    "brand": "nokia",
-    "imageUrl": "https://drop.ndtv.com/TECH/product_database/images/2152017124957PM_635_nokia_3310.jpeg?downsize=*:420&output-quality=80",
-    "price": "100",
-    "category": "smartphones",
-    "createdAt": "2022-01-28T11:16:26.742Z",
-    "id": "eyqzst748kyyb84xi",
-    "updatedAt": "2022-01-28T11:16:49.686Z"
-  }
-]
+[{"name":"3310","description":"somthing loger","brand":"nokia","imageUrl":"https://drop.ndtv.com/TECH/product_database/images/2152017124957PM_635_nokia_3310.jpeg?downsize=*:420&output-quality=80","price":"100","category":"smartphones","createdAt":"2022-01-28T11:16:26.742Z","id":"eyqzst748kyyb84xi","updatedAt":"2022-01-28T11:16:49.686Z"},{"name":"3310","description":"Samsung S21 ultra 2021","brand":"Samsung","imageUrl":"https://assets.hardwarezone.com/img/2021/01/20210121_170115_0.jpg","price":"999","category":"smartphones","createdAt":"2022-01-28T13:55:29.249Z","id":"rkowrfyskyygwnz6"},{"name":"3310","description":"Samsung S21 ultra 2021","brand":"Samsung","imageUrl":"https://assets.hardwarezone.com/img/2021/01/20210121_170115_0.jpg","price":"999","category":"smartphones","createdAt":"2022-01-28T13:57:48.814Z","id":"rkowrfyskyygznny"},{"name":"3310","description":"Samsung S21 ultra 2021","brand":"Samsung","imageUrl":"https://assets.hardwarezone.com/img/2021/01/20210121_170115_0.jpg","price":"999","category":"smartphones","createdAt":"2022-01-28T13:57:49.645Z","id":"rkowrfyskyygzob1"},{"name":"3310","description":"Samsung S21 ultra 2021","brand":"Samsung","imageUrl":"https://assets.hardwarezone.com/img/2021/01/20210121_170115_0.jpg","price":"999","category":"smartphones","createdAt":"2022-01-28T13:57:59.092Z","id":"rkowrfyskyygzvlg"}]
