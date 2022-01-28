@@ -8,7 +8,8 @@ const dataFolderPath = join(
   dirname(fileURLToPath(import.meta.url)),
   "../CRUD/Data"
 );
-const usersPublicFolderPath = join(process.cwd(), "./public/img");
+const usersPublicFolderPath = join(process.cwd(), "./public/img/products");
+
 const productsJSONPath = join(dataFolderPath, "products.json");
 const postsJSONPath = join(dataFolderPath, "reviews.json");
 
