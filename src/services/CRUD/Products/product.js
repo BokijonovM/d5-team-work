@@ -136,7 +136,10 @@ productsRouter.post("/:productId/review", async (req, res, next) => {
 productsRouter.get("/:productId/review", async (req, res, next) => {
   try {
     const reviewArray = await getReview();
-    res.send(reviewArray);
+    const filtered = reviewArray.filter(
+      ({ productId }) => productId === req.params.productId
+    );
+    res.send(filtered);
   } catch (error) {
     next(error);
   }
@@ -154,7 +157,6 @@ productsRouter.get("/:productId/review/:id", async (req, res, next) => {
         .send({ message: `Post with ${req.params.id} is not found!` });
     }
     res.send(singleReview);
-
   } catch (error) {
     next(error);
   }
@@ -195,7 +197,6 @@ productsRouter.delete("/:productId/review/:id", async (req, res, next) => {
     await writeReview(remainingPosts);
 
     res.send({ message: `Post with ${reviewId} is successfully deleted` });
-
   } catch (error) {
     next(error);
   }
