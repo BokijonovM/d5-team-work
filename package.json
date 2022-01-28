@@ -21,5 +21,11 @@
   "homepage": "https://github.com/BokijonovM/d5-team-work#readme",
   "devDependencies": {
     "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "express-list-endpoints": "^6.0.0",
+    "uniqid": "^5.4.0"
   }
 }
