@@ -9,6 +9,7 @@ import {
   notFoundHandler,
   genericErrorHandler,
 } from "./errorHandlers.js";
+// import filesRouter from "./services/files/index.js"
 
 import productsRouter from "./services/CRUD/Products/product.js";
 const server = express();
