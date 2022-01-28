@@ -3,23 +3,32 @@ import uniqid from "uniqid";
 import createHttpError from "http-errors";
 import { validationResult } from "express-validator";
 import { newProductValidation } from "./validation.js";
+// import reviewRouter from "../Reviews/review.js";
+import {
+  checkBlogPostSchema,
+  checkValidationResult,
+} from "../Reviews/validation.js";
 
-import { getProducts, writeProducts } from "../..//libs/fs-toolsReview.js";
+import {
+  getProducts,
+  writeProducts,
+  getReview,
+  writeReview,
+} from "../..//libs/fs-toolsReview.js";
 
 const productsRouter = express.Router();
 
 productsRouter.post("/", newProductValidation, async (req, res, next) => {
   try {
-    
-      const newproduct = { ...req.body, createdAt: new Date(), id: uniqid() };
+    const newproduct = { ...req.body, createdAt: new Date(), id: uniqid() };
 
-      const productsArray = await getProducts();
+    const productsArray = await getProducts();
 
-      productsArray.push(newproduct);
+    productsArray.push(newproduct);
 
-      await writeProducts(productsArray);
+    await writeProducts(productsArray);
 
-      res.send(newproduct)
+    res.send(newproduct);
   } catch (error) {
     next(error);
   }
@@ -31,7 +40,7 @@ productsRouter.get("/", async (req, res, next) => {
 
     if (req.query && req.query.category) {
       const filteredproducts = productsArray.filter(
-        (product) => product.category === req.query.category
+        product => product.category === req.query.category
       );
       res.send(filteredproducts);
     } else {
@@ -47,7 +56,7 @@ productsRouter.get("/:productId", async (req, res, next) => {
     const productId = req.params.productId;
     const productsArray = await getProducts();
     const foundproduct = productsArray.find(
-      (product) => product.id === productId
+      product => product.id === productId
     );
     if (foundproduct) {
       res.send(foundproduct);
@@ -64,13 +73,25 @@ productsRouter.get("/:productId", async (req, res, next) => {
   }
 });
 
+productsRouter.delete("/:productId", async (req, res, next) => {
+  try {
+    const productId = req.params.productId;
+    const productsArray = await getProducts();
+    const remaningproducts = productsArray.filter(
+      product => product.id !== productId
+    );
+    await writeProducts(remaningproducts);
+    res.send(`Product wit ${productId} has successfully removed!`);
+  } catch (error) {
+    next(error);
+  }
+});
+
 productsRouter.put("/:productId", async (req, res, next) => {
   try {
     const productId = req.params.productId;
     const productsArray = await getProducts();
-    const index = productsArray.findIndex(
-      (product) => product.id === productId
-    );
+    const index = productsArray.findIndex(product => product.id === productId);
     const oldproduct = productsArray[index];
     const updatedproduct = {
       ...oldproduct,
@@ -85,15 +106,87 @@ productsRouter.put("/:productId", async (req, res, next) => {
   }
 });
 
-productsRouter.delete("/:productId", async (req, res, next) => {
+productsRouter.post("/:productId/review", async (req, res, next) => {
   try {
-    const productId = req.params.productId;
-    const productsArray = await getProducts();
-    const remaningproducts = productsArray.filter(
-      (product) => product.id !== productId
+    const newReview = {
+      ...req.body,
+      createdAt: new Date(),
+      productId: req.params.productId,
+      id: uniqid(),
+    };
+    const reviewArray = await getReview();
+
+    reviewArray.push(newReview);
+
+    await writeReview(reviewArray);
+
+    res.send(newReview);
+  } catch (error) {
+    next(error);
+  }
+});
+
+productsRouter.get("/:productId/review", async (req, res, next) => {
+  try {
+    const reviewArray = await getReview();
+    res.send(reviewArray);
+  } catch (error) {
+    next(error);
+  }
+});
+
+productsRouter.get("/:productId/review/:id", async (req, res, next) => {
+  try {
+    const fileAsJSONArray = await getReview();
+    const singleReview = fileAsJSONArray.find(
+      singleReview => singleReview.id === req.params.id
     );
-    await writeProducts(remaningproducts);
-    res.send(`Product wit ${productId} has successfully removed!`);
+    if (!singleReview) {
+      res
+        .status(404)
+        .send({ message: `Post with ${req.params.id} is not found!` });
+    }
+    res.send(singleReview);
+  } catch (error) {
+    next(error);
+  }
+});
+
+productsRouter.put("/:productId/review/:id", async (req, res, next) => {
+  try {
+    const reviewId = req.params.id;
+    const reviewArray = await getReview();
+
+    const index = reviewArray.findIndex(review => review.id === reviewId);
+
+    if (!index == -1) {
+      res.status(404).send(`Review with ${reviewId} is not find!`);
+    }
+    const oldReview = reviewArray[index];
+    const newReview = {
+      ...oldReview,
+      ...req.body,
+      updatedAt: new Date(),
+      id: reviewId,
+    };
+    reviewArray[index] = newReview;
+    await writeReview(reviewArray);
+    res.send(newReview);
+  } catch (error) {
+    next(error);
+  }
+});
+productsRouter.delete("/:productId/review/:id", async (req, res, next) => {
+  try {
+    const reviewId = req.params.id;
+
+    const postsArray = await getReview();
+
+    const remainingPosts = postsArray.filter(post => post.id !== reviewId);
+
+    await writeReview(remainingPosts);
+
+    res.send({ message: `Post with ${reviewId} is successfully deleted` });
   } catch (error) {
     next(error);
   }
