@@ -4,11 +4,18 @@ import createHttpError from "http-errors";
 import { validationResult } from "express-validator";
 import { newProductValidation } from "./validation.js";
 // import reviewRouter from "../Reviews/review.js";
+
 // import {
 //   checkBlogPostSchema,
 //   checkValidationResult,
 // } from "../Reviews/validation.js";
 import { parseFile, uploadFile } from "../../files/index.js";
+
+import {
+  checkBlogPostSchema,
+  checkValidationResult,
+} from "../Reviews/validation.js";
+
 import {
   getProducts,
   writeProducts,
@@ -147,6 +154,48 @@ productsRouter.get("/:productId/review/:id", async (req, res, next) => {
         .send({ message: `Post with ${req.params.id} is not found!` });
     }
     res.send(singleReview);
+
+  } catch (error) {
+    next(error);
+  }
+});
+
+productsRouter.put("/:productId/review/:id", async (req, res, next) => {
+  try {
+    const reviewId = req.params.id;
+    const reviewArray = await getReview();
+
+    const index = reviewArray.findIndex(review => review.id === reviewId);
+
+    if (!index == -1) {
+      res.status(404).send(`Review with ${reviewId} is not find!`);
+    }
+    const oldReview = reviewArray[index];
+    const newReview = {
+      ...oldReview,
+      ...req.body,
+      updatedAt: new Date(),
+      id: reviewId,
+    };
+    reviewArray[index] = newReview;
+    await writeReview(reviewArray);
+    res.send(newReview);
+  } catch (error) {
+    next(error);
+  }
+});
+productsRouter.delete("/:productId/review/:id", async (req, res, next) => {
+  try {
+    const reviewId = req.params.id;
+
+    const postsArray = await getReview();
+
+    const remainingPosts = postsArray.filter(post => post.id !== reviewId);
+
+    await writeReview(remainingPosts);
+
+    res.send({ message: `Post with ${reviewId} is successfully deleted` });
+
   } catch (error) {
     next(error);
   }
