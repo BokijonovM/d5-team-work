@@ -3,11 +3,7 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import uniqid from "uniqid";
 import { getReview, writeReview } from "../../libs/fs-toolsReview.js";
-import {
-  checkBlogPostSchema,
-  checkSearchSchema,
-  checkValidationResult,
-} from "./validation.js";
+import { checkBlogPostSchema, checkValidationResult } from "./validation.js";
 
 const reviewRouter = express.Router();
 const postsJSONPath = join(
@@ -46,6 +42,26 @@ reviewRouter.post(
 reviewRouter.get("/", async (req, res, next) => {
   const reviewArray = await getReview();
   res.send(reviewArray);
+  try {
+  } catch (error) {
+    next(error);
+  }
+});
+
+// get method by ID
+
+reviewRouter.get("/:id", async (req, res, next) => {
+  const fileAsJSONArray = await getReview();
+  const singleReview = fileAsJSONArray.find(
+    singleReview => singleReview.id === req.params.id
+  );
+  if (!singleReview) {
+    res
+      .status(404)
+      .send({ message: `Post with ${req.params.id} is not found!` });
+  }
+  res.send(singleReview);
+  res.send(fileArray);
   try {
   } catch (error) {
     next(error);
