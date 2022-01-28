@@ -10,6 +10,7 @@ import {
   genericErrorHandler,
 } from "./errorHandlers.js";
 
+import productsRouter from "./services/CRUD/Products/product.js";
 const server = express();
 
 const port = 3001;
@@ -18,6 +19,7 @@ server.use(cors());
 server.use(express.json());
 
 server.use("/review", reviewRouter);
+server.use("/products", productsRouter);
 
 server.use(badRequestHandler);
 server.use(unauthorizedHandler);

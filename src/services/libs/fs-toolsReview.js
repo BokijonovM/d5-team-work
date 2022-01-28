@@ -9,11 +9,13 @@ const dataFolderPath = join(
   "../CRUD/Data"
 );
 const usersPublicFolderPath = join(process.cwd(), "./public/img");
-
+const productsJSONPath = join(dataFolderPath, "products.json");
 const postsJSONPath = join(dataFolderPath, "reviews.json");
 
 export const getReview = () => readJSON(postsJSONPath);
-export const writeReview = content => writeJSON(postsJSONPath, content);
+export const writeReview = (content) => writeJSON(postsJSONPath, content);
+export const getProducts = () => readJSON(productsJSONPath);
+export const writeProducts = (content) => writeJSON(productsJSONPath, content);
 
 export const saveUsersAvatars = (filename, contentAsABuffer) =>
   writeFile(join(usersPublicFolderPath, filename), contentAsABuffer);
