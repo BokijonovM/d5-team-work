@@ -39,25 +39,19 @@ productsRouter.get("/", async (req, res, next) => {
   }
 });
 
-productsRouter.get("/:productId", async (req, res, next) => {
+productsRouter.get("/:product_id", async (req, res, next) => {
   try {
-    const productId = req.params.productId;
-    const productsArray = await getProducts();
-    const foundproduct = productsArray.find(
-      product => product.id === productId
+    const result = await pool.query(
+      `SELECT * FROM products WHERE product_id=$1;`,
+      [req.params.product_id]
     );
-    if (foundproduct) {
-      res.send(foundproduct);
+    if (result.rows[0]) {
+      res.send(result.rows);
     } else {
-      next(
-        createHttpError(
-          404,
-          `product with id ${req.params.productId} not found!`
-        )
-      );
+      res.status(404).send({ message: "No such products." });
     }
   } catch (error) {
-    next(error);
+    res.status(500).send({ message: error.message });
   }
 });
 
