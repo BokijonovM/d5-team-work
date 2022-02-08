@@ -73,17 +73,12 @@ reviewRouter.put("/:review_id", async (req, res, next) => {
 
 // delete method
 
-reviewRouter.delete("/:id", async (req, res, next) => {
+reviewRouter.delete("/:review_id", async (req, res, next) => {
   try {
-    const reviewId = req.params.id;
-
-    const postsArray = await getReview();
-
-    const remainingPosts = postsArray.filter(post => post.id !== reviewId);
-
-    await writeReview(remainingPosts);
-
-    res.send({ message: `Post with ${reviewId} is successfully deleted` });
+    await pool.query(`DELETE FROM reviews WHERE review_id=$1;`, [
+      req.params.review_id,
+    ]);
+    res.status(204).send();
   } catch (error) {
     next(error);
   }
