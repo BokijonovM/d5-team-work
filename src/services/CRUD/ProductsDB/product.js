@@ -1,14 +1,6 @@
 import express from "express";
-import uniqid from "uniqid";
-import createHttpError from "http-errors";
 import pool from "../../../utils/db/connect.js";
 import { parseFile, uploadFile } from "../../files/index.js";
-import {
-  getProducts,
-  writeProducts,
-  getReview,
-  writeReview,
-} from "../../libs/fs-toolsReview.js";
 
 const productsRouter = express.Router();
 
@@ -88,6 +80,41 @@ productsRouter.put("/:product_id", async (req, res, next) => {
     next(error);
   }
 });
+
+// image upload
+
+productsRouter.put(
+  "/:product_id/cover",
+  parseFile.single("cover"),
+  uploadFile,
+  async (req, res, next) => {
+    try {
+      const fileAsJSONArray = await getProducts();
+
+      const blogIndex = fileAsJSONArray.findIndex(
+        blog => blog.id === req.params.productId
+      );
+      if (!blogIndex == -1) {
+        res
+          .status(404)
+          .send({ message: `blog with ${req.params.productId} is not found!` });
+      }
+      const previousblogData = fileAsJSONArray[blogIndex];
+      const changedblog = {
+        ...previousblogData,
+        cover: req.file,
+        updatedAt: new Date(),
+        id: req.params.productId,
+      };
+      fileAsJSONArray[blogIndex] = changedblog;
+
+      await writeProducts(fileAsJSONArray);
+      res.send(changedblog);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 // productsRouter.post("/:productId/review", async (req, res, next) => {
 //   try {
