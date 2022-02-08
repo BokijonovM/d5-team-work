@@ -55,34 +55,35 @@ productsRouter.get("/:product_id", async (req, res, next) => {
   }
 });
 
-productsRouter.delete("/:productId", async (req, res, next) => {
+productsRouter.delete("/:product_id", async (req, res, next) => {
   try {
-    const productId = req.params.productId;
-    const productsArray = await getProducts();
-    const remaningproducts = productsArray.filter(
-      product => product.id !== productId
-    );
-    await writeProducts(remaningproducts);
-    res.send(`Product wit ${productId} has successfully removed!`);
+    await pool.query(`DELETE FROM products WHERE product_id=$1;`, [
+      req.params.product_id,
+    ]);
+    res
+      .status(204)
+      .send(
+        `Product with id ${req.params.product_id} has successfully removed!`
+      );
   } catch (error) {
     next(error);
   }
 });
 
-productsRouter.put("/:productId", async (req, res, next) => {
+productsRouter.put("/:product_id", async (req, res, next) => {
   try {
-    const productId = req.params.productId;
-    const productsArray = await getProducts();
-    const index = productsArray.findIndex(product => product.id === productId);
-    const oldproduct = productsArray[index];
-    const updatedproduct = {
-      ...oldproduct,
-      ...req.body,
-      updatedAt: new Date(),
-    };
-    productsArray[index] = updatedproduct;
-    writeProducts(productsArray);
-    res.send(updatedproduct);
+    const result = await pool.query(
+      `UPDATE products SET product_name=$1,product_desc=$2,product_brand=$3,product_price=$4,product_category=$5 WHERE product_id=$6 RETURNING * ;`,
+      [
+        req.body.product_name,
+        req.body.product_desc,
+        req.body.product_brand,
+        req.body.product_price,
+        req.body.product_category,
+        req.params.product_id,
+      ]
+    );
+    res.send(result.rows[0]);
   } catch (error) {
     next(error);
   }
