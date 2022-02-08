@@ -14,17 +14,19 @@ const productsRouter = express.Router();
 
 productsRouter.post("/", async (req, res, next) => {
   try {
-    const newproduct = { ...req.body, createdAt: new Date(), id: uniqid() };
-
-    const productsArray = await getProducts();
-
-    productsArray.push(newproduct);
-
-    await writeProducts(productsArray);
-
-    res.send(newproduct);
+    const result = await pool.query(
+      `INSERT INTO products(product_name, product_desc, product_brand, product_price ,product_category) VALUES($1,$2,$3,$4,$5) RETURNING *;`,
+      [
+        req.body.product_name,
+        req.body.product_desc,
+        req.body.product_brand,
+        req.body.product_price,
+        req.body.product_category,
+      ]
+    );
+    res.send(result.rows[0]);
   } catch (error) {
-    next(error);
+    res.status(500).send({ message: error.message });
   }
 });
 
