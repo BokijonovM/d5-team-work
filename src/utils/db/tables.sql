@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS
         product_desc TEXT NOT NULL,
         product_brand VARCHAR(50) NOT NULL,
         product_price INT NOT NULL,
-        product_category VARCHAR(50) NOT NULL
-        product_image_url VARCHAR(255) DEFAULT 'https://i.pravatar.cc/300',
+        product_category VARCHAR(50) NOT NULL,
+        cover VARCHAR(255) DEFAULT 'https://picsum.photos/900/600',
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
     );

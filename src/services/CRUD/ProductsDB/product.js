@@ -21,7 +21,7 @@ import {
   writeProducts,
   getReview,
   writeReview,
-} from "../..//libs/fs-toolsReview.js";
+} from "../../libs/fs-toolsReview.js";
 
 const productsRouter = express.Router();
 
