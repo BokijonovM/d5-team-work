@@ -11,7 +11,7 @@ import {
 } from "./errorHandlers.js";
 // import filesRouter from "./services/files/index.js"
 
-import productsRouter from "./services/CRUD/Products/product.js";
+import productsRouter from "./services/CRUD/ProductsDB/product.js";
 const server = express();
 
 const port = 3001;
