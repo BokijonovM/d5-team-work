@@ -2,20 +2,7 @@ import express from "express";
 import uniqid from "uniqid";
 import createHttpError from "http-errors";
 import pool from "../../../utils/db/connect.js";
-import { newProductValidation } from "./validation.js";
-// import reviewRouter from "../Reviews/review.js";
-
-// import {
-//   checkBlogPostSchema,
-//   checkValidationResult,
-// } from "../Reviews/validation.js";
 import { parseFile, uploadFile } from "../../files/index.js";
-
-import {
-  checkBlogPostSchema,
-  checkValidationResult,
-} from "../Reviews/validation.js";
-
 import {
   getProducts,
   writeProducts,
@@ -25,7 +12,7 @@ import {
 
 const productsRouter = express.Router();
 
-productsRouter.post("/", newProductValidation, async (req, res, next) => {
+productsRouter.post("/", async (req, res, next) => {
   try {
     const newproduct = { ...req.body, createdAt: new Date(), id: uniqid() };
 
@@ -43,18 +30,10 @@ productsRouter.post("/", newProductValidation, async (req, res, next) => {
 
 productsRouter.get("/", async (req, res, next) => {
   try {
-    const productsArray = await getProducts();
-
-    if (req.query && req.query.category) {
-      const filteredproducts = productsArray.filter(
-        product => product.category === req.query.category
-      );
-      res.send(filteredproducts);
-    } else {
-      res.send(productsArray);
-    }
+    const result = await pool.query(`SELECT * FROM products;`);
+    res.send(result.rows);
   } catch (error) {
-    next(error);
+    res.status(500).send({ message: error.message });
   }
 });
 
