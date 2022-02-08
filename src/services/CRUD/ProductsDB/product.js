@@ -89,167 +89,167 @@ productsRouter.put("/:product_id", async (req, res, next) => {
   }
 });
 
-productsRouter.post("/:productId/review", async (req, res, next) => {
-  try {
-    const newReview = {
-      ...req.body,
-      createdAt: new Date(),
-      productId: req.params.productId,
-      id: uniqid(),
-    };
-    const reviewArray = await getReview();
+// productsRouter.post("/:productId/review", async (req, res, next) => {
+//   try {
+//     const newReview = {
+//       ...req.body,
+//       createdAt: new Date(),
+//       productId: req.params.productId,
+//       id: uniqid(),
+//     };
+//     const reviewArray = await getReview();
 
-    reviewArray.push(newReview);
+//     reviewArray.push(newReview);
 
-    await writeReview(reviewArray);
+//     await writeReview(reviewArray);
 
-    res.send(newReview);
-  } catch (error) {
-    next(error);
-  }
-});
+//     res.send(newReview);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
-productsRouter.get("/:productId/review", async (req, res, next) => {
-  try {
-    const reviewArray = await getReview();
-    const filtered = reviewArray.filter(
-      ({ productId }) => productId === req.params.productId
-    );
-    res.send(filtered);
-  } catch (error) {
-    next(error);
-  }
-});
+// productsRouter.get("/:productId/review", async (req, res, next) => {
+//   try {
+//     const reviewArray = await getReview();
+//     const filtered = reviewArray.filter(
+//       ({ productId }) => productId === req.params.productId
+//     );
+//     res.send(filtered);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
-productsRouter.get("/:productId/review/:id", async (req, res, next) => {
-  try {
-    const fileAsJSONArray = await getReview();
-    const singleReview = fileAsJSONArray.find(
-      singleReview => singleReview.id === req.params.id
-    );
-    if (!singleReview) {
-      res
-        .status(404)
-        .send({ message: `Post with ${req.params.id} is not found!` });
-    }
-    res.send(singleReview);
-  } catch (error) {
-    next(error);
-  }
-});
+// productsRouter.get("/:productId/review/:id", async (req, res, next) => {
+//   try {
+//     const fileAsJSONArray = await getReview();
+//     const singleReview = fileAsJSONArray.find(
+//       singleReview => singleReview.id === req.params.id
+//     );
+//     if (!singleReview) {
+//       res
+//         .status(404)
+//         .send({ message: `Post with ${req.params.id} is not found!` });
+//     }
+//     res.send(singleReview);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
-productsRouter.put("/:productId/review/:id", async (req, res, next) => {
-  try {
-    const reviewId = req.params.id;
-    const reviewArray = await getReview();
+// productsRouter.put("/:productId/review/:id", async (req, res, next) => {
+//   try {
+//     const reviewId = req.params.id;
+//     const reviewArray = await getReview();
 
-    const index = reviewArray.findIndex(review => review.id === reviewId);
+//     const index = reviewArray.findIndex(review => review.id === reviewId);
 
-    if (!index == -1) {
-      res.status(404).send(`Review with ${reviewId} is not find!`);
-    }
-    const oldReview = reviewArray[index];
-    const newReview = {
-      ...oldReview,
-      ...req.body,
-      updatedAt: new Date(),
-      id: reviewId,
-    };
-    reviewArray[index] = newReview;
-    await writeReview(reviewArray);
-    res.send(newReview);
-  } catch (error) {
-    next(error);
-  }
-});
-productsRouter.delete("/:productId/review/:id", async (req, res, next) => {
-  try {
-    const reviewId = req.params.id;
+//     if (!index == -1) {
+//       res.status(404).send(`Review with ${reviewId} is not find!`);
+//     }
+//     const oldReview = reviewArray[index];
+//     const newReview = {
+//       ...oldReview,
+//       ...req.body,
+//       updatedAt: new Date(),
+//       id: reviewId,
+//     };
+//     reviewArray[index] = newReview;
+//     await writeReview(reviewArray);
+//     res.send(newReview);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+// productsRouter.delete("/:productId/review/:id", async (req, res, next) => {
+//   try {
+//     const reviewId = req.params.id;
 
-    const postsArray = await getReview();
+//     const postsArray = await getReview();
 
-    const remainingPosts = postsArray.filter(post => post.id !== reviewId);
+//     const remainingPosts = postsArray.filter(post => post.id !== reviewId);
 
-    await writeReview(remainingPosts);
+//     await writeReview(remainingPosts);
 
-    res.send({ message: `Post with ${reviewId} is successfully deleted` });
-  } catch (error) {
-    next(error);
-  }
-});
+//     res.send({ message: `Post with ${reviewId} is successfully deleted` });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
-productsRouter.put("/:productId/review/:id", async (req, res, next) => {
-  try {
-    const reviewId = req.params.id;
-    const reviewArray = await getReview();
+// productsRouter.put("/:productId/review/:id", async (req, res, next) => {
+//   try {
+//     const reviewId = req.params.id;
+//     const reviewArray = await getReview();
 
-    const index = reviewArray.findIndex(review => review.id === reviewId);
+//     const index = reviewArray.findIndex(review => review.id === reviewId);
 
-    if (!index == -1) {
-      res.status(404).send(`Review with ${reviewId} is not find!`);
-    }
-    const oldReview = reviewArray[index];
-    const newReview = {
-      ...oldReview,
-      ...req.body,
-      updatedAt: new Date(),
-      id: reviewId,
-    };
-    reviewArray[index] = newReview;
-    await writeReview(reviewArray);
-    res.send(newReview);
-  } catch (error) {
-    next(error);
-  }
-});
-productsRouter.delete("/:productId/review/:id", async (req, res, next) => {
-  try {
-    const reviewId = req.params.id;
+//     if (!index == -1) {
+//       res.status(404).send(`Review with ${reviewId} is not find!`);
+//     }
+//     const oldReview = reviewArray[index];
+//     const newReview = {
+//       ...oldReview,
+//       ...req.body,
+//       updatedAt: new Date(),
+//       id: reviewId,
+//     };
+//     reviewArray[index] = newReview;
+//     await writeReview(reviewArray);
+//     res.send(newReview);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+// productsRouter.delete("/:productId/review/:id", async (req, res, next) => {
+//   try {
+//     const reviewId = req.params.id;
 
-    const postsArray = await getReview();
+//     const postsArray = await getReview();
 
-    const remainingPosts = postsArray.filter(post => post.id !== reviewId);
+//     const remainingPosts = postsArray.filter(post => post.id !== reviewId);
 
-    await writeReview(remainingPosts);
+//     await writeReview(remainingPosts);
 
-    res.send({ message: `Post with ${reviewId} is successfully deleted` });
-  } catch (error) {
-    next(error);
-  }
-});
+//     res.send({ message: `Post with ${reviewId} is successfully deleted` });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
-// upload images
+// // upload images
 
-productsRouter.put(
-  "/:productId/imageUrl",
-  parseFile.single("imageUrl"),
-  uploadFile,
-  async (req, res, next) => {
-    try {
-      const fileAsJSONArray = await getProducts();
+// productsRouter.put(
+//   "/:productId/imageUrl",
+//   parseFile.single("imageUrl"),
+//   uploadFile,
+//   async (req, res, next) => {
+//     try {
+//       const fileAsJSONArray = await getProducts();
 
-      const blogIndex = fileAsJSONArray.findIndex(
-        blog => blog.id === req.params.productId
-      );
-      if (!blogIndex == -1) {
-        res
-          .status(404)
-          .send({ message: `blog with ${req.params.productId} is not found!` });
-      }
-      const previousblogData = fileAsJSONArray[blogIndex];
-      const changedblog = {
-        ...previousblogData,
-        cover: req.file,
-        updatedAt: new Date(),
-        id: req.params.productId,
-      };
-      fileAsJSONArray[blogIndex] = changedblog;
+//       const blogIndex = fileAsJSONArray.findIndex(
+//         blog => blog.id === req.params.productId
+//       );
+//       if (!blogIndex == -1) {
+//         res
+//           .status(404)
+//           .send({ message: `blog with ${req.params.productId} is not found!` });
+//       }
+//       const previousblogData = fileAsJSONArray[blogIndex];
+//       const changedblog = {
+//         ...previousblogData,
+//         cover: req.file,
+//         updatedAt: new Date(),
+//         id: req.params.productId,
+//       };
+//       fileAsJSONArray[blogIndex] = changedblog;
 
-      await writeProducts(fileAsJSONArray);
-      res.send(changedblog);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
+//       await writeProducts(fileAsJSONArray);
+//       res.send(changedblog);
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
 export default productsRouter;

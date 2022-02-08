@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS
     reviews(
         review_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
         comment TEXT NOT NULL,
-        review_rate INT NOT NULL,
+        review_rate VARCHAR(50) NOT NULL,
         product_id INTEGER NOT NULL REFERENCES products(product_id) ON DELETE CASCADE,
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
