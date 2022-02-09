@@ -52,11 +52,9 @@ productsRouter.delete("/:product_id", async (req, res, next) => {
     await pool.query(`DELETE FROM products WHERE product_id=$1;`, [
       req.params.product_id,
     ]);
-    res
-      .status(204)
-      .send(
-        `Product with id ${req.params.product_id} has successfully removed!`
-      );
+    res.send(
+      `Product with id ${req.params.product_id} has successfully removed!`
+    );
   } catch (error) {
     next(error);
   }
