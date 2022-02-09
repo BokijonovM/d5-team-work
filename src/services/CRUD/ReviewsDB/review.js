@@ -14,6 +14,28 @@ reviewsRouter.get("/", async (req, res, next) => {
   }
 });
 
+reviewsRouter.get("/search", async (req, res, next) => {
+  try {
+    console.log({ query: req.query });
+    const reviews = await Review.findAll({
+      where: {
+        [Op.or]: [
+          {
+            text: {
+              [Op.iLike]: `%${req.query.q}%`,
+            },
+          },
+        ],
+      },
+      include: [Product],
+    });
+    res.send(reviews);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 reviewsRouter.get("/:review_id", async (req, res, next) => {
   try {
     const singleReview = await Review.findByPk(req.params.review_id);
@@ -63,28 +85,6 @@ reviewsRouter.delete("/:review_id", async (req, res, next) => {
     res.send(
       `Review with id ${req.params.review_id} has successfully deleted!`
     );
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-});
-
-reviewsRouter.get("/search", async (req, res, next) => {
-  try {
-    console.log({ query: req.query });
-    const reviews = await Review.findAll({
-      where: {
-        [Op.or]: [
-          {
-            text: {
-              [Op.iLike]: `%${req.query.q}%`,
-            },
-          },
-        ],
-      },
-      include: [Product],
-    });
-    res.send(reviews);
   } catch (error) {
     console.log(error);
     next(error);
