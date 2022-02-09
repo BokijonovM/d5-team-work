@@ -12,4 +12,17 @@ productsRouter.get("/", async (req, res, next) => {
   }
 });
 
+productsRouter.get("/:product_id", async (req, res, next) => {
+  try {
+    const singleProduct = await Product.findByPk(req.params.id);
+    if (singleProduct) {
+      res.send(singleProduct);
+    } else {
+      res.status(404).send({ error: "No such product" });
+    }
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
 export default productsRouter;
