@@ -1,5 +1,4 @@
 import Sequelize from "sequelize";
-console.log(process.env);
 const { POSTGRES_URI } = process.env;
 
 const sequelize = new Sequelize(POSTGRES_URI, {

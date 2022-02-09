@@ -5,8 +5,8 @@ const productsRouter = Router();
 
 productsRouter.get("/", async (req, res, next) => {
   try {
-    const pro = await Product.findAll({});
-    res.send(pro);
+    const products = await Product.findAll({});
+    res.send(products);
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
