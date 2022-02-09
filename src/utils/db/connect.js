@@ -1,6 +1,20 @@
-import pg from "pg";
-const { Pool } = pg;
+import Sequelize from "sequelize";
+console.log("POSTGRES_URI");
+const { POSTGRES_URI } = process.env;
 
-const pool = new Pool();
+const sequelize = new Sequelize(POSTGRES_URI, {
+  dialect: "postgres",
+});
 
-export default pool;
+export const authenticateDatabase = async () => {
+  try {
+    await sequelize.authenticate({ logging: false });
+    await sequelize.sync({ alter: true, logging: false });
+    console.log("✅ Connection has been established successfully.");
+  } catch (error) {
+    console.log(error);
+    console.error("❌ Unable to connect to the database:", error);
+  }
+};
+
+export default sequelize;

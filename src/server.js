@@ -2,6 +2,7 @@ import express from "express";
 import listEndpoints from "express-list-endpoints";
 import cors from "cors";
 import reviewRouter from "./services/CRUD/ReviewsDB/review.js";
+import { authenticateDatabase } from "./utils/db/connect.js";
 
 import {
   badRequestHandler,
@@ -30,6 +31,7 @@ server.use(genericErrorHandler);
 console.table(listEndpoints(server));
 
 server.listen(port, () => {
+  authenticateDatabase();
   console.log(`Server is running on port ${port}`);
 });
 server.on("error", error => {
