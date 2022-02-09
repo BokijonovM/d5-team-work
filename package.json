@@ -22,11 +22,11 @@
   },
   "homepage": "https://github.com/BokijonovM/d5-team-work#readme",
   "devDependencies": {
+    "dotenv": "^16.0.0",
     "nodemon": "^2.0.15"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "express-list-endpoints": "^6.0.0",
     "express-validator": "^6.14.0",

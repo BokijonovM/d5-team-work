@@ -1,5 +1,5 @@
 import Sequelize from "sequelize";
-console.log("POSTGRES_URI");
+console.log(process.env);
 const { POSTGRES_URI } = process.env;
 
 const sequelize = new Sequelize(POSTGRES_URI, {
@@ -9,7 +9,7 @@ const sequelize = new Sequelize(POSTGRES_URI, {
 export const authenticateDatabase = async () => {
   try {
     await sequelize.authenticate({ logging: false });
-    await sequelize.sync({ alter: true, logging: false });
+    await sequelize.sync({ alter: false, logging: false });
     console.log("✅ Connection has been established successfully.");
   } catch (error) {
     console.log(error);
