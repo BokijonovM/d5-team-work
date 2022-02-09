@@ -1,5 +1,7 @@
 import { Router } from "express";
+import Product from "../ProductsDB/model.js";
 import Review from "./model.js";
+import { Op } from "sequelize";
 
 const reviewsRouter = Router();
 
@@ -61,6 +63,28 @@ reviewsRouter.delete("/:review_id", async (req, res, next) => {
     res.send(
       `Review with id ${req.params.review_id} has successfully deleted!`
     );
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+reviewsRouter.get("/search", async (req, res, next) => {
+  try {
+    console.log({ query: req.query });
+    const reviews = await Review.findAll({
+      where: {
+        [Op.or]: [
+          {
+            text: {
+              [Op.iLike]: `%${req.query.q}%`,
+            },
+          },
+        ],
+      },
+      include: [Product],
+    });
+    res.send(reviews);
   } catch (error) {
     console.log(error);
     next(error);
