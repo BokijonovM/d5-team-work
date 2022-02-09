@@ -36,4 +36,35 @@ reviewsRouter.post("/", async (req, res, next) => {
   }
 });
 
+reviewsRouter.put("/:review_id", async (req, res, next) => {
+  try {
+    const [success, updateREview] = await Review.update(req.body, {
+      where: { review_id: req.params.review_id },
+      returning: true,
+    });
+    if (success) {
+      res.send(updateREview);
+    } else {
+      res.status(404).send({ message: "no such review" });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+reviewsRouter.delete("/:review_id", async (req, res, next) => {
+  try {
+    await Review.destroy({
+      where: { review_id: req.params.review_id },
+    });
+    res.send(
+      `Review with id ${req.params.review_id} has successfully deleted!`
+    );
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 export default reviewsRouter;
