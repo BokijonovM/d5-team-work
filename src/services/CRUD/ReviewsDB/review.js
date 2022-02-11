@@ -64,7 +64,7 @@ reviewsRouter.get("/:review_id", async (req, res, next) => {
     if (singleReview) {
       res.send(singleReview);
     } else {
-      res.status(404), end({ message: "No such review" });
+      res.status(404).send({ message: "No such review" });
     }
   } catch (error) {
     console.log(error);

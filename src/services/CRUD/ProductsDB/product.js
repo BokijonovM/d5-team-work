@@ -2,15 +2,21 @@ import { Router } from "express";
 import Product from "./model.js";
 import { Op } from "sequelize";
 import Review from "../ReviewsDB/model.js";
+import Category from "./categories.model.js";
 
 const productsRouter = Router();
 
 productsRouter.get("/", async (req, res, next) => {
   try {
+    const { offset = 0, limit = 9 } = req.query;
+    const totalProduct = await Product.count({});
+
     const products = await Product.findAll({
-      include: [Review],
+      include: [Review, Category],
+      offset,
+      limit,
     });
-    res.send(products);
+    res.send({ data: products, count: totalProduct });
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
@@ -43,11 +49,23 @@ productsRouter.get("/search", async (req, res, next) => {
 
 productsRouter.get("/:product_id", async (req, res, next) => {
   try {
-    const singleProduct = await Product.findByPk(req.params.product_id);
+    const singleProduct = await Product.findOne({
+      where: {
+        product_id: req.params.product_id,
+      },
+      include: [
+        Category,
+        Review,
+        {
+          model: Category,
+          attribute: ["name"],
+        },
+      ],
+    });
     if (singleProduct) {
       res.send(singleProduct);
     } else {
-      res.status(404).send({ error: "No such product" });
+      res.status(404).send({ message: "No such product" });
     }
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -59,10 +77,38 @@ productsRouter.get("/:product_id", async (req, res, next) => {
 productsRouter.post("/", async (req, res, next) => {
   try {
     const newProduct = await Product.create(req.body);
-    res.send(newProduct);
+    if (req.body.category) {
+      for await (const categoryName of req.body.category) {
+        const category = await Category.create({ name: categoryName });
+        await newProduct.addCategory(category, {
+          through: { selfGranted: false },
+        });
+      }
+    }
+
+    const ProductWithCategory = await Product.findOne({
+      where: { product_id: newProduct.product_id },
+      include: [Review, Category],
+    });
+
+    res.send(ProductWithCategory);
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
+});
+
+productsRouter.post("/:product_id/category", async (req, res, next) => {
+  try {
+    const product = await Product.findByPk(req.params.product_id);
+    if (product) {
+      const category = await Category.create(req.body);
+
+      await product.addCategory(category, { through: { selfGranted: false } });
+      res.send(category);
+    } else {
+      res.status(404).send({ error: "Product not found" });
+    }
+  } catch (error) {}
 });
 
 productsRouter.put("/:product_id", async (req, res, next) => {
