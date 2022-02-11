@@ -35,6 +35,7 @@
     "pg-hstore": "^2.3.4",
     "react-scripts": "^5.0.0",
     "sequelize": "^6.16.1",
+    "serve": "^13.0.2",
     "uniqid": "^5.4.0"
   }
 }
