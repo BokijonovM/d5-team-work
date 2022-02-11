@@ -14,7 +14,7 @@ reviewsRouter.get("/", async (req, res, next) => {
     const totalReview = await Review.count({});
 
     const reviews = await Review.findAll({
-      include: [Product, Category, User],
+      include: [Product, Category],
       offset,
       limit,
     });
