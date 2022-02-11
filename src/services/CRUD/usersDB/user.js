@@ -3,6 +3,7 @@ import { Op } from "sequelize";
 import sequelize from "sequelize";
 import Users from "./model.js";
 import Product from "../ProductsDB/model.js";
+import Cards from "./card.model.js";
 
 const usersRouter = Router();
 
@@ -12,7 +13,7 @@ usersRouter.get("/", async (req, res, next) => {
     const totalUsers = await Users.count({});
 
     const users = await Users.findAll({
-      include: [Product],
+      include: [Product, Cards],
       offset,
       limit,
     });
@@ -32,6 +33,53 @@ usersRouter.post("/", async (req, res, next) => {
     res.send(userWithCategory);
   } catch (error) {
     res.status(500).send({ message: error.message });
+  }
+});
+
+usersRouter.get("/:id", async (req, res, next) => {
+  try {
+    const singleUser = await Users.findOne({
+      where: {
+        id: req.params.id,
+      },
+      include: [Product, Cards],
+    });
+    if (singleUser) {
+      res.send(singleUser);
+    } else {
+      res.status(404).send({ message: "No such user" });
+    }
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
+usersRouter.put("/:id", async (req, res, next) => {
+  try {
+    const [success, updateUser] = await Users.update(req.body, {
+      where: { id: req.params.id },
+      returning: true,
+    });
+    if (success) {
+      res.send(updateUser);
+    } else {
+      res.status(404).send({ message: "no such user" });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+usersRouter.delete("/:id", async (req, res, next) => {
+  try {
+    await Users.destroy({
+      where: { id: req.params.id },
+    });
+    res.send(`User with id ${req.params.id} has successfully deleted!`);
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 });
 
