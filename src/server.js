@@ -1,7 +1,7 @@
 import express from "express";
 import listEndpoints from "express-list-endpoints";
 import cors from "cors";
-import reviewsRouter from "./services/CRUD/ReviewsDB/review.js";
+// import reviewsRouter from "./services/CRUD/ReviewsDB/review.js";
 import usersRouter from "./services/CRUD/usersDB/user.js";
 import { authenticateDatabase } from "./utils/db/connect.js";
 
@@ -22,7 +22,7 @@ server.use(cors());
 server.use(express.json());
 
 server.use("/users", usersRouter);
-server.use("/review", reviewsRouter);
+// server.use("/review", reviewsRouter);
 server.use("/product", productsRouter);
 
 server.use(badRequestHandler);
