@@ -108,7 +108,9 @@ productsRouter.post("/:product_id/category", async (req, res, next) => {
     } else {
       res.status(404).send({ error: "Product not found" });
     }
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
 });
 
 productsRouter.delete(
@@ -133,6 +135,20 @@ productsRouter.delete(
     }
   }
 );
+
+productsRouter.post("/:product_id/review", async (req, res, next) => {
+  try {
+    const product = await Product.findByPk(req.params.product_id);
+    if (product) {
+      const review = await Review.create(req.body);
+
+      await product.addReview(review, { through: { selfGranted: false } });
+      res.send(review);
+    } else {
+      res.status(404).send({ error: "Product not found" });
+    }
+  } catch (error) {}
+});
 
 productsRouter.put("/:product_id", async (req, res, next) => {
   try {

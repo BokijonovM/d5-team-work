@@ -36,6 +36,59 @@ usersRouter.post("/", async (req, res, next) => {
   }
 });
 
+usersRouter.get("/:id/cart", async (req, res, next) => {
+  try {
+    const totalItems = await Cards.count({
+      where: { id: req.params.id },
+    });
+
+    const totalPrice = await Cards.sum("products.price", {
+      where: { id: req.params.id },
+      include: [{ model: Product, attributes: [] }],
+    });
+
+    const user = await Users.findByPk(req.params.id);
+
+    if (user) {
+      const cart = await Cards.findAll({
+        where: { id: req.params.id },
+        include: [Product],
+        attribute: [
+          [
+            sequelize.cast(
+              sequelize.fn("count", sequelize.col("products.product_id")),
+              "integer"
+            ),
+            "quantity",
+          ],
+        ],
+        group: ["products.product_id"],
+      });
+      res.status(200).send({ totalItems, totalPrice, cart });
+    } else {
+      res.status(400).send("invalid user or product id");
+    }
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+usersRouter.post("/:id/cart", async (req, res, next) => {
+  try {
+    const newCart = await Users.findByPk(req.params.id);
+    if (newCart) {
+      const card = await Cards.create(req.body);
+
+      await newCart.addCards(card, { through: { selfGranted: false } });
+      res.send(card);
+    } else {
+      res.status(404).send({ error: "Product not found" });
+    }
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
 usersRouter.get("/:id", async (req, res, next) => {
   try {
     const singleUser = await Users.findOne({
