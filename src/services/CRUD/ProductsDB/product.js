@@ -1,7 +1,7 @@
 import { Router } from "express";
 import Product from "./model.js";
 import { Op } from "sequelize";
-import Review from "../ReviewsDB/model.js";
+import Review from "./review.model.js";
 import Category from "./categories.model.js";
 
 const productsRouter = Router();
@@ -110,6 +110,29 @@ productsRouter.post("/:product_id/category", async (req, res, next) => {
     }
   } catch (error) {}
 });
+
+productsRouter.delete(
+  "/:product_id/category/:categoryId",
+  async (req, res, next) => {
+    try {
+      const product = await Product.findByPk(req.params.product_id);
+      if (product) {
+        const category = await Category.findByPk(req.params.categoryId);
+
+        await product.removeCategory(category);
+        const productWithCategory = await Product.findOne({
+          where: { product_id: req.params.product_id },
+          include: [Category, Review],
+        });
+        res.send(productWithCategory);
+      } else {
+        res.status(404).send({ error: "Product not found" });
+      }
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  }
+);
 
 productsRouter.put("/:product_id", async (req, res, next) => {
   try {
